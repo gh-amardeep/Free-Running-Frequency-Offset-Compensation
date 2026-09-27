@@ -342,54 +342,79 @@ This is the fundamental principle used for the phase-based CFO estimation in the
 
 ---
 
-# 📊 Results
+# 📊 Experimental Results
 
-Recommended outputs to include in the repository:
+The experiment demonstrates the effect of carrier frequency offset and its digital compensation using two independent PlutoSDRs.
 
-```text
-output-images/
-├── rotating-phasor.png
-├── phase-vs-time.png
-├── cfo-fft.png
-├── before-compensation.png
-└── after-compensation.png
-```
+## 🌀 Received I/Q Signal
 
-### Rotating Phasor
+The received complex samples exhibit a rotating phasor due to the frequency difference between the independent transmitter and receiver oscillators.
 
-Visualizes the received I/Q samples before CFO compensation.
-
-```markdown
-![Rotating Phasor](output-images/rotating-phasor.png)
-```
-
-### Phase Evolution
-
-Shows the unwrapped phase as a function of time.
-
-```markdown
-![Phase Evolution](output-images/phase-vs-time.png)
-```
-
-### Frequency-Domain Verification
-
-Shows the FFT spectrum used to verify the estimated frequency offset.
-
-```markdown
-![CFO FFT](output-images/cfo-fft.png)
-```
-
-### Before and After Compensation
-
-Comparing the I/Q distributions before and after compensation provides a visual demonstration of the correction.
-
-```markdown
-![Before Compensation](output-images/before-compensation.png)
-
-![After Compensation](output-images/after-compensation.png)
-```
+<p align="center">
+  <img src="output-images/iq-scatter-before-cfo.png" width="650">
+</p>
 
 ---
+
+## 📐 Unwrapped Instantaneous Phase
+
+The unwrapped phase shows an approximately linear progression with sample index. The slope of this phase evolution is used to estimate the carrier frequency offset.
+
+<p align="center">
+  <img src="output-images/phase-estimation.png" width="650">
+</p>
+
+The relationship used for CFO estimation is:
+
+$$
+\Delta f = \frac{1}{2\pi}\frac{d\phi(t)}{dt}
+$$
+
+where $\Delta f$ is the carrier frequency offset and $\phi(t)$ is the instantaneous phase.
+
+---
+
+## 📡 Received Signal Spectrum
+
+The FFT-based spectrum provides an independent frequency-domain observation of the received signal and serves as a cross-check for the phase-based CFO estimate.
+
+<p align="center">
+  <img src="output-images/rx-signal-spectrum.png" width="650">
+</p>
+
+---
+
+## 🎯 I/Q Signal After CFO Compensation
+
+After applying the estimated frequency-offset correction, the received signal is digitally rotated in the opposite direction to compensate for the accumulated phase rotation.
+
+<p align="center">
+  <img src="output-images/iq-scatter-after-cfo.png" width="650">
+</p>
+
+The compensated result provides a visual verification of the digital CFO correction.
+
+---
+
+## 🔄 Before vs After
+
+```text
+        BEFORE CFO COMPENSATION
+                 │
+                 ▼
+          Rotating I/Q Signal
+                 │
+                 ▼
+          Estimate Δf
+                 │
+                 ▼
+       Digital CFO Compensation
+                 │
+                 ▼
+         AFTER COMPENSATION
+                 │
+                 ▼
+       Corrected I/Q Signal
 
 # 🛠️ Technologies Used
 
